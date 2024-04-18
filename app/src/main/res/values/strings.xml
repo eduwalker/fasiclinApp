@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Enfermagem Fasipe</string>
+    <string name="hint_user">Código RA</string>
+    <string name="hint_pass">Senha</string>
+    <string name="txt_button_entrar">Entrar</string>
+    <string name="hint_search">Procurar Anamnese (CPF)</string>
+    <string name="txt_welcome">Bem Vindo(a)</string>
+    <string name="txt_criarAnamnese">CRIAR</string>
+    <string name="txt_listAnamnese">LISTA</string>
+    <string name="txt_registroanamnese">REGISTRO DE ANAMNESE</string>
+    <string name="txt_nome">NOME</string>
+    <string name="txt_cpf">CPF</string>
+    <string name="remember_password">Lembrar senha</string>
+
+    <string-array name="sexo_array">
+        <item>SEXO</item>
+        <item>Masculino</item>
+        <item>Feminino</item>
+        <item>Outro</item>
+    </string-array>
+
+    <string-array name="estado_civil_array">
+        <item>ESTADO CIVIL</item>
+        <item>Solteiro(a)</item>
+        <item>Casado(a)</item>
+        <item>Outro</item>
+    </string-array>
+
+</resources>
