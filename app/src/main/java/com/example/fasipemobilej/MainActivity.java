@@ -7,16 +7,15 @@ import android.os.Bundle;
 
 import android.content.Intent;
 import android.graphics.Color;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 
 import com.example.fasipemobilej.databinding.ActivityMainBinding;
-import com.example.fasipemobilej.model.LoginRequest;
-import com.example.fasipemobilej.model.LoginResponse;
+import com.example.fasipemobilej.model.request.LoginRequest;
+import com.example.fasipemobilej.model.response.LoginResponse;
+import com.example.fasipemobilej.network.ApiEnvironment;
 import com.example.fasipemobilej.network.ApiService;
 import com.google.android.material.snackbar.Snackbar;
 import retrofit2.Call;
@@ -28,6 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         binding.btEntrar.setEnabled(false);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://192.168.100.113:8443/auth/")
+                .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
                 .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

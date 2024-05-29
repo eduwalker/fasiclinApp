@@ -10,33 +10,9 @@
         android:id="@+id/textAlert"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Deseja realmente criar uma Anamnese ao portador do CPF:"
+        android:text="Deseja realmente CANCELAR essa Anamnese?"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-    <EditText
-        android:id="@+id/editTextCpf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="numberDecimal"
-        android:text="CPF"
-        android:editable="false"
-        android:focusable="false"/>
-
-    <TextView
-        android:id="@+id/textNome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Nome:"
-        android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <EditText
-        android:id="@+id/editTextNome2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:text="Nome"
-        android:editable="false"
-        android:focusable="false"/>
 
 
     <LinearLayout
@@ -47,25 +23,25 @@
         android:paddingTop="16dp">
 
         <Button
-            android:id="@+id/buttonSim"
+            android:id="@+id/buttonSimCancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Confirmar"
+            android:text="Sim"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_weight="1"
             android:layout_marginEnd="15dp"/>
 
         <Button
-            android:id="@+id/buttonNao"
+            android:id="@+id/buttonNaoCancel"
             android:layout_width="0dp"
-
             android:layout_height="wrap_content"
-            android:text="Cancelar"
+            android:text="Não"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_weight="1"
             android:backgroundTint="@color/red_mate"
             android:layout_marginStart="15dp"/>
+
     </LinearLayout>
 </LinearLayout>

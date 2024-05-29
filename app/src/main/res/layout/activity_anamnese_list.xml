@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".TelaListAnamnese">
+
+
+    <FrameLayout
+        android:id="@+id/containerTop"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/background_view_dash">
+
+        <ImageButton
+            android:id="@+id/buttonReturn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_return"
+            android:padding="5dp"
+            android:background="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/containerTop"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="25dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txtInputLayoutSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="20dp"
+            app:boxStrokeColor="@color/dark_cyan_green"
+            app:hintAnimationEnabled="true"
+            app:hintTextColor="@color/black"
+            app:errorTextColor="@color/red"
+            app:errorEnabled="true"
+            android:layout_marginTop="16dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchAnamnese"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_search"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textSize="18sp"
+            android:padding="9dp"
+            android:background="@drawable/background_edittext"
+
+            android:drawableEnd="@drawable/ic_searche" />
+    </com.google.android.material.textfield.TextInputLayout>
+</FrameLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewAnamneses"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:background="@android:color/background_light"
+        android:scrollbars="vertical"
+        android:scrollbarStyle="outsideOverlay"
+        android:overScrollMode="ifContentScrolls"/>
+
+    <!-- Botão para navegação para a próxima página -->
+    <Button
+        android:id="@+id/buttonNextPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Próxima Página"
+        android:layout_margin="16dp"/>
+</LinearLayout>

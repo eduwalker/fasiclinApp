@@ -13,5 +13,7 @@
     <color name="cyan_green">#B2FDFD</color>
     <color name="grey">#B5B5B5</color>
     <color name="grey_white">#E6E6E6</color>
+    <color name="blue_mate">#2196F3</color>
+    <color name="yellow_mate">#BC9319</color>
 
 </resources>

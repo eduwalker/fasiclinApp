@@ -1,4 +1,4 @@
-package com.example.fasipemobilej.model;
+package com.example.fasipemobilej.model.response;
 
 public record UserResponse(
         String nome,

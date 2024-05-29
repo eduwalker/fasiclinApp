@@ -1,6 +1,6 @@
 package com.example.fasipemobilej;
 
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,9 +16,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fasipemobilej.databinding.ActivityTelaPrincipalBinding;
-import com.example.fasipemobilej.model.PacienteRequest;
-import com.example.fasipemobilej.model.PacienteResponse;
-import com.example.fasipemobilej.model.UserResponse;
+import com.example.fasipemobilej.model.request.AnamneseRequest;
+import com.example.fasipemobilej.model.response.AnamneseResponseID;
+import com.example.fasipemobilej.model.request.PacienteRequest;
+import com.example.fasipemobilej.model.response.PacienteResponse;
+import com.example.fasipemobilej.model.response.UserResponse;
+import com.example.fasipemobilej.network.ApiEnvironment;
 import com.example.fasipemobilej.network.ApiService;
 import com.example.fasipemobilej.network.LocalDateAdapter;
 import com.google.gson.Gson;
@@ -25,6 +29,8 @@ import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -49,15 +55,36 @@ public class TelaPrincipal extends AppCompatActivity {
         fetchUserInfo();
 
         binding.btCriarAnamnese.setOnClickListener(view -> showSearchCpfDialog());
+        listaAnamnese();
+        btlogout();
 
 
-//        binding.btCriarAnamnese.setOnClickListener(view -> {
-//            Intent intent = new Intent(TelaPrincipal.this, TelaQuestions.class);
-//            startActivity(intent);
-//        });
+        binding.searchAnamnese.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                binding.searchAnamnese.clearFocus();
+            }
+        });
+
+    }
 
 
+    private void btlogout(){
+        ImageButton btnLogout = findViewById(R.id.btnLogout);
+        btnLogout.setOnClickListener(v -> {
+            // Limpa SharedPreferences
+            SharedPreferences preferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();  // Remove dados armazenados
+            editor.apply();  //Aplica todas mudanças de estado
 
+            // Inicia a tela de login
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();  // Finaliza a atividade atual
+        });
     }
 
 
@@ -67,14 +94,14 @@ public class TelaPrincipal extends AppCompatActivity {
         String token = sharedPreferences.getString("TOKEN", "");
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://192.168.100.113:8443/")
+                .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
                 .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ApiService service = retrofit.create(ApiService.class);
 
-        // Adicione um header de Autorização com o token JWT
+
         Call<UserResponse> call = service.getUserInfo("Bearer " + token);
 
         call.enqueue(new Callback<UserResponse>() {
@@ -83,13 +110,13 @@ public class TelaPrincipal extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     UserResponse userInfo = response.body();
 
-                    // Atualize a UI com o nome do usuário
+                    // Atualiza tela com nome do Profissional
                     runOnUiThread(() -> {
                         TextView tvUserName = binding.tvUserName;
                         tvUserName.setText(userInfo.nome());
                     });
 
-                    // Salve o nome do usuário nas SharedPreferences
+                    // Salva nome do Profissional em SharedPReferences
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("NOME_USUARIO", userInfo.nome());
                     editor.apply();
@@ -125,7 +152,7 @@ public class TelaPrincipal extends AppCompatActivity {
         buttonSearch.setOnClickListener(v -> {
             String cpf = editTextCpf.getText().toString();
             if (!cpf.isEmpty()) {
-                searchCpf(cpf, dialog); // Modificado para passar 'dialog' como argumento
+                searchCpf(cpf, dialog);
             } else {
                 Toast.makeText(this, "Por favor, insira um CPF válido.", Toast.LENGTH_SHORT).show();
             }
@@ -133,7 +160,6 @@ public class TelaPrincipal extends AppCompatActivity {
 
         dialog.show(); // Mostra o diálogo
     }
-
 
 
     private void searchCpf(String cpf, AlertDialog dialog) {
@@ -146,7 +172,7 @@ public class TelaPrincipal extends AppCompatActivity {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://192.168.100.113:8443/")
+                .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
                 .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
@@ -200,32 +226,111 @@ public class TelaPrincipal extends AppCompatActivity {
         TextView textViewCpf = dialogView.findViewById(R.id.editTextCpf);
         TextView textViewNome = dialogView.findViewById(R.id.editTextNome2);
 
-        // Supondo que o layout 'dialog_patient_info' tem os TextViews com IDs 'editTextCpf' e 'editTextNome2'
-        textViewCpf.setText(pacienteInfo.cpf_pac());
+        textViewCpf.setText(formatarCPF(pacienteInfo.cpf_pac()));
         textViewNome.setText(pacienteInfo.nome_pac());
-        // Cria o construtor do diálogo
+
+        // Cria o construtor do diálogo sem os botões padrão
         AlertDialog.Builder builder = new AlertDialog.Builder(TelaPrincipal.this);
         builder.setView(dialogView);
 
-        // Adiciona botões ao diálogo, se necessário
-        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+        // Adiciona ação aos botões personalizados do seu layout
+        Button buttonSim = dialogView.findViewById(R.id.buttonSim);
+        Button buttonNao = dialogView.findViewById(R.id.buttonNao);
+
+        final AlertDialog resultDialog = builder.create();
+
+        buttonSim.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                // Executar ação ao clicar no botão Confirmar
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                String token = sharedPreferences.getString("TOKEN", "");
+
+
+                String status = "valid";
+                String statusfn = "Analise";
+
+                AnamneseRequest anamneseRequest = new AnamneseRequest(pacienteInfo.cpf_pac(), status, statusfn);
+                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                httpClient.addInterceptor(logging);
+
+                Gson gson = new GsonBuilder()
+                        .create();
+
+                // Configura o Retrofit
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
+                        .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build();
+
+                ApiService service = retrofit.create(ApiService.class);
+
+                service.criarAnamnesePorCpf("Bearer " + token, anamneseRequest).enqueue(new Callback<AnamneseResponseID>() {
+                    @Override
+                    public void onResponse(Call<AnamneseResponseID> call, Response<AnamneseResponseID> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            AnamneseResponseID anamneseResponseID = response.body();
+
+                            // Salva o ID da Anamnese criada
+                            Long idAnamnese = anamneseResponseID.idAnamnese();
+                            getSharedPreferences("MySharedPref", MODE_PRIVATE).edit()
+                                    .putLong("ANAMNESE_ID", idAnamnese)
+                                    .apply();
+
+                            // Navega para a próxima tela com o ID da anamnese
+                            Intent intent = new Intent(TelaPrincipal.this, TelaQuestions.class);
+                            intent.putExtra("EXTRA_ANAMNESE_ID", anamneseResponseID.idAnamnese());
+                            intent.putExtra("EXTRA_NOME", pacienteInfo.nome_pac());
+                            intent.putExtra("EXTRA_CPF", pacienteInfo.cpf_pac());
+                            intent.putExtra("EXTRA_DATA_NASCIMENTO", pacienteInfo.data_nasc_pac());
+                            startActivity(intent);
+                        } else {
+                            // Tratar os casos de erro
+                            Log.e("AnamneseCreation", "Erro ao criar anamnese: " + response.errorBody());
+                        }
+                        resultDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(Call<AnamneseResponseID> call, Throwable t) {
+                        Log.e("AnamneseCreation", "Falha ao criar anamnese", t);
+                        resultDialog.dismiss();
+                    }
+                });
             }
         });
 
-        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+        buttonNao.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
+            public void onClick(View v) {
+                // Feche o diálogo
+                resultDialog.dismiss();
             }
         });
 
         // Cria e mostra o diálogo
-        AlertDialog resultDialog = builder.create();
         resultDialog.show();
     }
+
+    public static String formatarCPF(String cpf) {
+        return cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
+    }
+
+
+
+    public void listaAnamnese(){
+
+        binding.btAnamanesesList.setOnClickListener(view -> {
+            Intent intent = new Intent(TelaPrincipal.this, TelaListAnamnese.class);
+            startActivity(intent);
+        });
+
+
+    }
+
 
 
 }

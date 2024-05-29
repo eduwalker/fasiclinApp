@@ -1,4 +1,6 @@
-package com.example.fasipemobilej.model;
+package com.example.fasipemobilej.model.response;
+
+import java.time.LocalDate;
 
 public record PacienteResponse(
         String cpf_pac,
