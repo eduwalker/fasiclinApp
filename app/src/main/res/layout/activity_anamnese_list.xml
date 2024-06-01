@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context=".TelaListAnamnese">
 
-
     <FrameLayout
         android:id="@+id/containerTop"
         android:layout_width="match_parent"
@@ -20,40 +19,40 @@
             android:src="@drawable/ic_return"
             android:padding="5dp"
             android:background="@null"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/containerTop"
             android:layout_marginStart="15dp"
             android:layout_marginTop="25dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/txtInputLayoutSearch"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="48dp"
             android:layout_marginEnd="20dp"
-            app:boxStrokeColor="@color/dark_cyan_green"
-            app:hintAnimationEnabled="true"
-            app:hintTextColor="@color/black"
-            app:errorTextColor="@color/red"
-            app:errorEnabled="true"
             android:layout_marginTop="16dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/searchAnamnese"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_search"
-            android:inputType="text"
-            android:maxLines="1"
-            android:textSize="18sp"
-            android:padding="9dp"
-            android:background="@drawable/background_edittext"
+            <Button
+                android:id="@+id/buttonFilterAnalise"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Analise" />
 
-            android:drawableEnd="@drawable/ic_searche" />
-    </com.google.android.material.textfield.TextInputLayout>
-</FrameLayout>
+            <Button
+                android:id="@+id/buttonFilterAprovada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="Aprovada" />
 
+            <Button
+                android:id="@+id/buttonFilterCancelada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancelada" />
+
+        </LinearLayout>
+    </FrameLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAnamneses"
@@ -67,11 +66,35 @@
         android:scrollbarStyle="outsideOverlay"
         android:overScrollMode="ifContentScrolls"/>
 
-    <!-- Botão para navegação para a próxima página -->
-    <Button
-        android:id="@+id/buttonNextPage"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Próxima Página"
-        android:layout_margin="16dp"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="07dp">
+
+        <ImageButton
+            android:id="@+id/buttonPreviousPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_left"
+            android:background="@null" />
+
+        <TextView
+            android:id="@+id/textPageInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:text="1/10"
+            android:textSize="18sp" />
+
+        <ImageButton
+            android:id="@+id/buttonNextPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_right"
+            android:background="@null" />
+    </LinearLayout>
+
 </LinearLayout>

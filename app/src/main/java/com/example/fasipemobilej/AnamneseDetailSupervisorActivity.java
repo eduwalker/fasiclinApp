@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fasipemobilej.model.request.AnamneseObsRequest;
+import com.example.fasipemobilej.model.request.StatusAnamneseRequest;
 import com.example.fasipemobilej.model.response.AnamnePerguntaResposta;
 import com.example.fasipemobilej.model.response.AnamneseDetailResponse;
 import com.example.fasipemobilej.model.response.PacienteResponse;
@@ -70,7 +71,7 @@ public class AnamneseDetailSupervisorActivity extends AppCompatActivity {
 
         btnGeneratePdf.setOnClickListener(v -> createPdfFromWebView());
         btnReprovar.setOnClickListener(v -> showObservationsDialog(anamneseId));
-        btnAprovar.setOnClickListener(v -> updateAnamneseStatus(anamneseId, "Aprovada", null));
+        btnAprovar.setOnClickListener(v -> updateAnamneseStatusAprov(anamneseId, "valid", "Aprovada"));
         buttonReturn.setOnClickListener(v -> finish());
     }
 
@@ -213,6 +214,43 @@ public class AnamneseDetailSupervisorActivity extends AppCompatActivity {
                     finish(); // Voltar à tela anterior
                 } else {
                     Toast.makeText(AnamneseDetailSupervisorActivity.this, "Erro ao atualizar status e observações.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(AnamneseDetailSupervisorActivity.this, "Falha na comunicação: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
+
+    private void updateAnamneseStatusAprov(long anamneseId, String status, String statusFn) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String token = sharedPreferences.getString("TOKEN", "");
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
+                .client(buildHttpClient())
+                .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(buildGson()))
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        StatusAnamneseRequest request = new StatusAnamneseRequest(anamneseId, status, statusFn);
+        Call<Void> call = apiService.updateAnamneseStatus("Bearer " + token, request);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(AnamneseDetailSupervisorActivity.this, "Status atualizados com sucesso, Anamnese APROVAD!", Toast.LENGTH_SHORT).show();
+                    finish(); // Voltar à tela anterior
+                } else {
+                    Toast.makeText(AnamneseDetailSupervisorActivity.this, "Erro ao aprovar Anamnese...", Toast.LENGTH_SHORT).show();
                 }
             }
 

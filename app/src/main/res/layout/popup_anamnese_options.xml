@@ -27,6 +27,12 @@
         android:backgroundTint="@color/yellow_mate"
         android:text="Editar" />
 
-
+    <Button
+        android:id="@+id/btObs"
+        android:layout_width="match_parent"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/dark_cyan_green"
+        android:text="OBSERVAÇÕES" />
 
 </LinearLayout>

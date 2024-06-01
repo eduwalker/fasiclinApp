@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.fasipemobilej.model.response.AnamneseListPage;
 import com.example.fasipemobilej.model.response.AnamneseResponse;
 import com.example.fasipemobilej.network.AnamneseSupervisorAdapter;
 import com.example.fasipemobilej.network.ApiEnvironment;
@@ -39,11 +41,13 @@ public class AnamneseSupervisorActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AnamneseSupervisorAdapter anamneseAdapter;
+    private int currentPage = 0;
+    private int totalPages = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_anamnese_list); // Usando o layout existente
+        setContentView(R.layout.activity_anamnese_list); // Usando o layout ajustado
 
         recyclerView = findViewById(R.id.recyclerViewAnamneses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -52,18 +56,28 @@ public class AnamneseSupervisorActivity extends AppCompatActivity {
         recyclerView.setAdapter(anamneseAdapter);
         getSupportActionBar().hide();
 
-        ImageButton buttonReturn = findViewById(R.id.buttonReturn);
-        buttonReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
+        setupPaginationButtons();
+        fetchAnamneses(currentPage);
+        backButton();
+    }
+
+    private void setupPaginationButtons() {
+        findViewById(R.id.buttonPreviousPage).setOnClickListener(v -> {
+            if (currentPage > 0) {
+                currentPage--;
+                fetchAnamneses(currentPage);
             }
         });
 
-        fetchAnamneses();
+        findViewById(R.id.buttonNextPage).setOnClickListener(v -> {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                fetchAnamneses(currentPage);
+            }
+        });
     }
 
-    private void fetchAnamneses() {
+    private void fetchAnamneses(int page) {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String token = sharedPreferences.getString("TOKEN", "");
 
@@ -83,25 +97,38 @@ public class AnamneseSupervisorActivity extends AppCompatActivity {
 
         ApiService service = retrofit.create(ApiService.class);
 
-        Call<List<AnamneseResponse>> call = service.listAnamnesesBySupervisor("Bearer " + token);
+        Call<AnamneseListPage> call = service.listAnamnesesSupervisorPaged("Bearer " + token, page, 10);
 
-        call.enqueue(new Callback<List<AnamneseResponse>>() {
+        call.enqueue(new Callback<AnamneseListPage>() {
             @Override
-            public void onResponse(Call<List<AnamneseResponse>> call, Response<List<AnamneseResponse>> response) {
+            public void onResponse(Call<AnamneseListPage> call, Response<AnamneseListPage> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<AnamneseResponse> anamneses = response.body();
+                    AnamneseListPage anamneseListPage = response.body();
+                    List<AnamneseResponse> anamneses = anamneseListPage.content();
                     anamneseAdapter.updateData(anamneses);
+                    totalPages = anamneseListPage.totalPages();
+                    updatePaginationInfo();
                 } else {
                     Toast.makeText(AnamneseSupervisorActivity.this, "Erro ao buscar anamneses", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<AnamneseResponse>> call, Throwable t) {
+            public void onFailure(Call<AnamneseListPage> call, Throwable t) {
                 Toast.makeText(AnamneseSupervisorActivity.this, "Falha na comunicação", Toast.LENGTH_LONG).show();
                 Log.e("Retrofit", "Erro na comunicação: " + t.getMessage());
             }
         });
+    }
+
+    private void updatePaginationInfo() {
+        TextView textPageInfo = findViewById(R.id.textPageInfo);
+        textPageInfo.setText(String.format("%d/%d", currentPage + 1, totalPages));
+    }
+
+    private void backButton() {
+        ImageButton backButton = findViewById(R.id.buttonReturn);
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void showOptionsDialog(AnamneseResponse anamnese) {
@@ -126,7 +153,4 @@ public class AnamneseSupervisorActivity extends AppCompatActivity {
 
         dialog.show();
     }
-
-
-
 }

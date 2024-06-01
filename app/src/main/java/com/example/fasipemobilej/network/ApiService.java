@@ -7,6 +7,7 @@ import com.example.fasipemobilej.model.request.AnamneseViewRequest;
 import com.example.fasipemobilej.model.response.AnamneseAnswerResponse;
 import com.example.fasipemobilej.model.request.AnamneseRequest;
 import com.example.fasipemobilej.model.response.AnamneseDetailResponse;
+import com.example.fasipemobilej.model.response.AnamneseListPage;
 import com.example.fasipemobilej.model.response.AnamneseListResponse;
 import com.example.fasipemobilej.model.response.AnamneseResponse;
 import com.example.fasipemobilej.model.response.AnamneseResponseID;
@@ -29,6 +30,7 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("auth/login")
@@ -60,9 +62,18 @@ public interface ApiService {
     @POST("fasiclin/anamnese/update-observations")
     Call<Void> updateAnamneseObservations(@Header("Authorization") String token, @Body AnamneseObsRequest request);
 
+    @PUT("fasiclin/anamnese/update-status")
+    Call<Void> updateAnamneseStatus(@Header("Authorization") String token, @Body StatusAnamneseRequest request);
+
 
     @PUT("fasiclin/anamnese/update-respostas")
     Call<ResponseBody> updateRespostas(@Header("Authorization") String token, @Body AnamneseAnswerRequest request);
+
+    @GET("/fasiclin/anamneses/page")
+    Call<AnamneseListPage> listAnamnesesPaged(@Header("Authorization") String token, @Query("page") int page, @Query("size") int size);
+
+    @GET("/fasiclin/anamneses/supervisor/page")
+    Call<AnamneseListPage> listAnamnesesSupervisorPaged(@Header("Authorization") String token, @Query("page") int page, @Query("size") int size);
 
 
 

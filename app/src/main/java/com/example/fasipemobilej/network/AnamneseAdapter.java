@@ -28,9 +28,11 @@ public class AnamneseAdapter extends RecyclerView.Adapter<AnamneseAdapter.ViewHo
     }
 
     public void updateData(List<AnamneseResponse> newAnamneses) {
-        anamneses.clear();
-        anamneses.addAll(newAnamneses);
-        notifyDataSetChanged();
+        if (newAnamneses != null) {
+            anamneses.clear();
+            anamneses.addAll(newAnamneses);
+            notifyDataSetChanged();
+        }
     }
 
     @Override
