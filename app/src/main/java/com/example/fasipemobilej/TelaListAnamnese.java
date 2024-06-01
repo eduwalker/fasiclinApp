@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.fasipemobilej.model.response.AnamneseListPage;
 import com.example.fasipemobilej.model.response.AnamneseResponse;
@@ -41,6 +42,7 @@ public class TelaListAnamnese extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private AnamneseAdapter anamneseAdapter;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private int currentPage = 0;
     private int totalPages = 0;
 
@@ -51,6 +53,7 @@ public class TelaListAnamnese extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewAnamneses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         anamneseAdapter = new AnamneseAdapter(new ArrayList<>(), this::showOptionsDialog);
         recyclerView.setAdapter(anamneseAdapter);
@@ -58,7 +61,12 @@ public class TelaListAnamnese extends AppCompatActivity {
 
         fetchAnamneses(currentPage);
         setupPaginationButtons();
+        setupSwipeRefresh();
         backButton();
+    }
+
+    private void setupSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchAnamneses(currentPage));
     }
 
     private void setupPaginationButtons() {
@@ -113,12 +121,14 @@ public class TelaListAnamnese extends AppCompatActivity {
                     Toast.makeText(TelaListAnamnese.this, "Erro ao buscar anamneses", Toast.LENGTH_LONG).show();
                     Log.e("API Error", "Error response code: " + response.code());
                 }
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onFailure(Call<AnamneseListPage> call, Throwable t) {
                 Toast.makeText(TelaListAnamnese.this, "Falha na comunicação", Toast.LENGTH_LONG).show();
                 Log.e("Retrofit", "Erro na comunicação: " + t.getMessage());
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }

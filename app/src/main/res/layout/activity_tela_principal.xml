@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    tools:context=".TelaPrincipal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey_white"
-        tools:context=".TelaPrincipal">
+        android:background="@color/grey_white">
 
         <View
             android:id="@+id/containerTop"
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="220dp"
             android:background="@drawable/background_view_dash"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -168,6 +168,16 @@
             app:layout_constraintStart_toEndOf="@+id/specialButton"
             app:layout_constraintTop_toBottomOf="@id/btAnamanesesList" />
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@color/white"
+            app:menu="@menu/bottom_nav_menu"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
