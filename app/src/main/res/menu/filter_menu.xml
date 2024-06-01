@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filter_all"
+        android:title="Total" />
+    <item
+        android:id="@+id/filter_analise"
+        android:title="Analise" />
+    <item
+        android:id="@+id/filter_aprovada"
+        android:title="Aprovada" />
+    <item
+        android:id="@+id/filter_reprovada"
+        android:title="Reprovada" />
+</menu>
