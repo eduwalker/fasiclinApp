@@ -14,11 +14,11 @@ import com.example.fasipemobilej.model.response.AnamneseResponse;
 
 import java.util.List;
 
-public class AnamneseAdapter extends RecyclerView.Adapter<AnamneseAdapter.ViewHolder> {
+public class AnamneseSupervisorAdapter extends RecyclerView.Adapter<AnamneseSupervisorAdapter.ViewHolder> {
     private List<AnamneseResponse> anamneses;
     private ItemClickListener mClickListener;
 
-    public AnamneseAdapter(List<AnamneseResponse> anamneses, ItemClickListener listener) {
+    public AnamneseSupervisorAdapter(List<AnamneseResponse> anamneses, ItemClickListener listener) {
         this.anamneses = anamneses;
         this.mClickListener = listener;
     }
@@ -35,8 +35,8 @@ public class AnamneseAdapter extends RecyclerView.Adapter<AnamneseAdapter.ViewHo
 
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cards_anamnese, parent, false);
-        return new ViewHolder(view, mClickListener);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cards_anamnese_sup, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -51,50 +51,24 @@ public class AnamneseAdapter extends RecyclerView.Adapter<AnamneseAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textTitle, textDescricao, textData, textStatus;
-        ItemClickListener mListener;
+        TextView textTitle, textDescricao, textCriador, textData, textStatus;
 
-        public ViewHolder(View itemView, ItemClickListener listener) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            this.mListener = listener;
             textTitle = itemView.findViewById(R.id.textTitulo);
             textDescricao = itemView.findViewById(R.id.textDescricao);
+            textCriador = itemView.findViewById(R.id.textCriador);
             textData = itemView.findViewById(R.id.textData);
             textStatus = itemView.findViewById(R.id.textStatus);
         }
 
         @SuppressLint("SetTextI18n")
         public void bind(AnamneseResponse anamnese, ItemClickListener listener) {
-            textTitle.setText("Nome: " + anamnese.pacienteResponseDTO().nome_pac());
+            textTitle.setText("Paciente: " + anamnese.pacienteResponseDTO().nome_pac());
             textDescricao.setText("CPF: " + formatarCPF(anamnese.pacienteResponseDTO().cpf_pac()));
+            textCriador.setText("Criador: " + anamnese.nomeProf());
             textData.setText("Data: " + DateFormatter.formatDateTime(anamnese.dataAnamnese().toString()));
             textStatus.setText("Status: " + anamnese.statusAnamneseFn());
-
-            // Verificação de null para statusAnamneseFn
-            String status = anamnese.statusAnamneseFn();
-            if (status != null) {
-                // Mudando a cor da borda conforme o status
-                switch (status) {
-                    case "Cancelada":
-                        itemView.setBackgroundResource(R.drawable.border_red);
-                        break;
-                    case "Analise":
-                        itemView.setBackgroundResource(R.drawable.border_blue);
-                        break;
-                    case "Reprovada":
-                        itemView.setBackgroundResource(R.drawable.border_orange);
-                        break;
-                    case "Aprovada":
-                        itemView.setBackgroundResource(R.drawable.border_green);
-                        break;
-                    default:
-                        itemView.setBackgroundResource(R.drawable.background_cards); // Cor padrão
-                        break;
-                }
-            } else {
-                // Caso o status seja null, definir um background padrão
-                itemView.setBackgroundResource(R.drawable.background_cards);
-            }
 
             itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onItemClick(anamnese);

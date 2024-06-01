@@ -7,6 +7,8 @@
     <string name="hint_search">Procurar Anamnese (CPF)</string>
     <string name="txt_welcome">Bem Vindo(a)</string>
     <string name="txt_criarAnamnese">CRIAR</string>
+    <string name="txt_corrigirAnamnese">ANALISAR\nANAMNESES</string>
+    <string name="txt_prodAnamnese">ANAMNESES\nPRONTUARIO</string>
     <string name="txt_listAnamnese">LISTA</string>
     <string name="txt_registroanamnese">REGISTRO DE ANAMNESE</string>
     <string name="txt_nome">NOME</string>

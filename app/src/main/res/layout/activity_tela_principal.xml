@@ -12,7 +12,6 @@
         android:background="@color/grey_white"
         tools:context=".TelaPrincipal">
 
-
         <View
             android:id="@+id/containerTop"
             android:layout_width="match_parent"
@@ -21,7 +20,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvUserName"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -66,7 +64,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/ripple_rounded"
             android:src="@drawable/ic_exit"
-            android:padding="12dp"/>
+            android:padding="12dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/txtInputLayoutSearch"
@@ -115,8 +113,7 @@
             app:layout_constraintEnd_toStartOf="@+id/btAnamanesesList"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/containerTop"/>
-
+            app:layout_constraintTop_toBottomOf="@id/containerTop" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btAnamanesesList"
@@ -135,10 +132,42 @@
             app:layout_constraintStart_toEndOf="@+id/btCriarAnamnese"
             app:layout_constraintTop_toBottomOf="@id/containerTop" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/specialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="40dp"
+            android:textSize="10dp"
+            android:background="@drawable/background_button_dash"
+            android:enabled="true"
+            android:text="@string/txt_corrigirAnamnese"
+            android:textAllCaps="false"
+            android:padding="16dp"
+            android:drawableTop="@drawable/ic_analitic"
+            app:layout_constraintEnd_toStartOf="@+id/btProntAnamnese"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btCriarAnamnese" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btProntAnamnese"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="50dp"
+            android:textSize="10dp"
+            android:background="@drawable/background_button_dash"
+            android:enabled="true"
+            android:text="@string/txt_prodAnamnese"
+            android:textAllCaps="false"
+            android:drawableTop="@drawable/ic_prontanamnese"
+            android:padding="14dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/specialButton"
+            app:layout_constraintTop_toBottomOf="@id/btAnamanesesList" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 </ScrollView>

@@ -31,6 +31,17 @@
             android:exported="false"/>
 
         <activity
+            android:name=".AnamneseSupervisorActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".AnamneseDetailSupervisorActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".TelaEditarAnamnese"
+            android:exported="false"/>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 

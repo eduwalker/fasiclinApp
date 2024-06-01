@@ -14,10 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.fasipemobilej.model.response.AnamneseListResponse;
 import com.example.fasipemobilej.model.response.AnamneseResponse;
-import com.example.fasipemobilej.model.response.AnamneseResponseID;
-import com.example.fasipemobilej.network.AnamneseAdapter;
+import com.example.fasipemobilej.network.AnamneseSupervisorAdapter;
 import com.example.fasipemobilej.network.ApiEnvironment;
 import com.example.fasipemobilej.network.ApiService;
 import com.example.fasipemobilej.network.LocalDateAdapter;
@@ -37,35 +35,33 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class TelaListAnamnese extends AppCompatActivity {
-
+public class AnamneseSupervisorActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private AnamneseAdapter anamneseAdapter;
-
-
-
+    private AnamneseSupervisorAdapter anamneseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_anamnese_list);
+        setContentView(R.layout.activity_anamnese_list); // Usando o layout existente
 
         recyclerView = findViewById(R.id.recyclerViewAnamneses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
-        anamneseAdapter = new AnamneseAdapter(new ArrayList<>(), this::showOptionsDialog);
+        anamneseAdapter = new AnamneseSupervisorAdapter(new ArrayList<>(), this::showOptionsDialog);
         recyclerView.setAdapter(anamneseAdapter);
         getSupportActionBar().hide();
 
+        ImageButton buttonReturn = findViewById(R.id.buttonReturn);
+        buttonReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         fetchAnamneses();
-        backButton();
     }
-
-
-
 
     private void fetchAnamneses() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -87,7 +83,7 @@ public class TelaListAnamnese extends AppCompatActivity {
 
         ApiService service = retrofit.create(ApiService.class);
 
-        Call<List<AnamneseResponse>> call = service.listAnamneses(token);
+        Call<List<AnamneseResponse>> call = service.listAnamnesesBySupervisor("Bearer " + token);
 
         call.enqueue(new Callback<List<AnamneseResponse>>() {
             @Override
@@ -96,64 +92,37 @@ public class TelaListAnamnese extends AppCompatActivity {
                     List<AnamneseResponse> anamneses = response.body();
                     anamneseAdapter.updateData(anamneses);
                 } else {
-                    Toast.makeText(TelaListAnamnese.this, "Erro ao buscar anamneses", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AnamneseSupervisorActivity.this, "Erro ao buscar anamneses", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<AnamneseResponse>> call, Throwable t) {
-                Toast.makeText(TelaListAnamnese.this, "Falha na comunicação", Toast.LENGTH_LONG).show();
+                Toast.makeText(AnamneseSupervisorActivity.this, "Falha na comunicação", Toast.LENGTH_LONG).show();
                 Log.e("Retrofit", "Erro na comunicação: " + t.getMessage());
             }
         });
     }
 
-
-    public void backButton() {
-        ImageButton backButton = findViewById(R.id.buttonReturn);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Encerra a atividade
-            }
-        });
-
-    }
-
-
     private void showOptionsDialog(AnamneseResponse anamnese) {
         LayoutInflater inflater = getLayoutInflater();
-        View popupView = inflater.inflate(R.layout.popup_anamnese_options, null);
+        View popupView = inflater.inflate(R.layout.popup_anamnese_options_sup, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(TelaListAnamnese.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(AnamneseSupervisorActivity.this);
         builder.setView(popupView);
         AlertDialog dialog = builder.create();
 
-        popupView.findViewById(R.id.btVisualizar).setOnClickListener(v -> {
-            Intent intent = new Intent(TelaListAnamnese.this, AnamneseDetailActivity.class);
+        popupView.findViewById(R.id.btVisualizarSup).setOnClickListener(v -> {
+            Intent intent = new Intent(AnamneseSupervisorActivity.this, AnamneseDetailSupervisorActivity.class);
             intent.putExtra("EXTRA_ANAMNESE_ID", anamnese.idAnamnese());
             startActivity(intent);
             dialog.dismiss();
         });
 
-        popupView.findViewById(R.id.btEditar).setOnClickListener(v -> {
-            if ("Reprovada".equals(anamnese.statusAnamneseFn())) {
-                Intent intent = new Intent(TelaListAnamnese.this, TelaEditarAnamnese.class);
-                intent.putExtra("EXTRA_ANAMNESE_ID", anamnese.idAnamnese());
-                intent.putExtra("EXTRA_NOME", anamnese.pacienteResponseDTO().nome_pac());
-                intent.putExtra("EXTRA_CPF", anamnese.pacienteResponseDTO().cpf_pac());
-                intent.putExtra("EXTRA_DATA_NASCIMENTO", anamnese.pacienteResponseDTO().data_nasc_pac().toString());
-                startActivity(intent);
-            } else {
-                Toast.makeText(TelaListAnamnese.this, "Apenas anamneses reprovadas podem ser editadas.", Toast.LENGTH_SHORT).show();
-            }
+        popupView.findViewById(R.id.btObservacoes).setOnClickListener(v -> {
+            Toast.makeText(AnamneseSupervisorActivity.this, "Observações: " + anamnese.pacienteResponseDTO().nome_pac(), Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         });
-
-//        popupView.findViewById(R.id.btCancelar).setOnClickListener(v -> {
-//            Toast.makeText(TelaListAnamnese.this, "Cancelar", Toast.LENGTH_SHORT).show();
-//            dialog.dismiss();
-//        });
 
         dialog.show();
     }

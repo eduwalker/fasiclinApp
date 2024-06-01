@@ -39,7 +39,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TelaPrincipal extends AppCompatActivity {
 
-
     private ActivityTelaPrincipalBinding binding;
     private static final String TAG = "MinhaAplicacao";
 
@@ -58,19 +57,10 @@ public class TelaPrincipal extends AppCompatActivity {
         listaAnamnese();
         btlogout();
 
-
-        binding.searchAnamnese.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                binding.searchAnamnese.clearFocus();
-            }
-        });
-
+        binding.searchAnamnese.setOnClickListener(v -> binding.searchAnamnese.clearFocus());
     }
 
-
-    private void btlogout(){
+    private void btlogout() {
         ImageButton btnLogout = findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(v -> {
             // Limpa SharedPreferences
@@ -87,8 +77,6 @@ public class TelaPrincipal extends AppCompatActivity {
         });
     }
 
-
-
     private void fetchUserInfo() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
         String token = sharedPreferences.getString("TOKEN", "");
@@ -100,7 +88,6 @@ public class TelaPrincipal extends AppCompatActivity {
                 .build();
 
         ApiService service = retrofit.create(ApiService.class);
-
 
         Call<UserResponse> call = service.getUserInfo("Bearer " + token);
 
@@ -116,10 +103,14 @@ public class TelaPrincipal extends AppCompatActivity {
                         tvUserName.setText(userInfo.nome());
                     });
 
-                    // Salva nome do Profissional em SharedPReferences
+                    // Salva nome e tipo do Profissional em SharedPreferences
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString("NOME_USUARIO", userInfo.nome());
+                    editor.putInt("TIPO_USUARIO", userInfo.tipo());
                     editor.apply();
+
+                    // Controla a visibilidade dos botões
+                    runOnUiThread(() -> controlButtonVisibility(userInfo.tipo()));
                 } else {
                     // Tratar erro, por exemplo, mostrando uma mensagem ao usuário
                 }
@@ -160,7 +151,6 @@ public class TelaPrincipal extends AppCompatActivity {
 
         dialog.show(); // Mostra o diálogo
     }
-
 
     private void searchCpf(String cpf, AlertDialog dialog) {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -239,77 +229,68 @@ public class TelaPrincipal extends AppCompatActivity {
 
         final AlertDialog resultDialog = builder.create();
 
-        buttonSim.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
-                String token = sharedPreferences.getString("TOKEN", "");
+        buttonSim.setOnClickListener(v -> {
+            SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+            String token = sharedPreferences.getString("TOKEN", "");
 
 
-                String status = "valid";
-                String statusfn = "Analise";
+            String status = "valid";
+            String statusfn = "Analise";
 
-                AnamneseRequest anamneseRequest = new AnamneseRequest(pacienteInfo.cpf_pac(), status, statusfn);
-                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            AnamneseRequest anamneseRequest = new AnamneseRequest(pacienteInfo.cpf_pac(), status, statusfn);
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-                httpClient.addInterceptor(logging);
+            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+            httpClient.addInterceptor(logging);
 
-                Gson gson = new GsonBuilder()
-                        .create();
+            Gson gson = new GsonBuilder()
+                    .create();
 
-                // Configura o Retrofit
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
-                        .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
-                        .addConverterFactory(GsonConverterFactory.create(gson))
-                        .build();
+            // Configura o Retrofit
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
+                    .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .build();
 
-                ApiService service = retrofit.create(ApiService.class);
+            ApiService service = retrofit.create(ApiService.class);
 
-                service.criarAnamnesePorCpf("Bearer " + token, anamneseRequest).enqueue(new Callback<AnamneseResponseID>() {
-                    @Override
-                    public void onResponse(Call<AnamneseResponseID> call, Response<AnamneseResponseID> response) {
-                        if (response.isSuccessful() && response.body() != null) {
-                            AnamneseResponseID anamneseResponseID = response.body();
+            service.criarAnamnesePorCpf("Bearer " + token, anamneseRequest).enqueue(new Callback<AnamneseResponseID>() {
+                @Override
+                public void onResponse(Call<AnamneseResponseID> call, Response<AnamneseResponseID> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        AnamneseResponseID anamneseResponseID = response.body();
 
-                            // Salva o ID da Anamnese criada
-                            Long idAnamnese = anamneseResponseID.idAnamnese();
-                            getSharedPreferences("MySharedPref", MODE_PRIVATE).edit()
-                                    .putLong("ANAMNESE_ID", idAnamnese)
-                                    .apply();
+                        // Salva o ID da Anamnese criada
+                        Long idAnamnese = anamneseResponseID.idAnamnese();
+                        getSharedPreferences("MySharedPref", MODE_PRIVATE).edit()
+                                .putLong("ANAMNESE_ID", idAnamnese)
+                                .apply();
 
-                            // Navega para a próxima tela com o ID da anamnese
-                            Intent intent = new Intent(TelaPrincipal.this, TelaQuestions.class);
-                            intent.putExtra("EXTRA_ANAMNESE_ID", anamneseResponseID.idAnamnese());
-                            intent.putExtra("EXTRA_NOME", pacienteInfo.nome_pac());
-                            intent.putExtra("EXTRA_CPF", pacienteInfo.cpf_pac());
-                            intent.putExtra("EXTRA_DATA_NASCIMENTO", pacienteInfo.data_nasc_pac());
-                            startActivity(intent);
-                        } else {
-                            // Tratar os casos de erro
-                            Log.e("AnamneseCreation", "Erro ao criar anamnese: " + response.errorBody());
-                        }
-                        resultDialog.dismiss();
+                        // Navega para a próxima tela com o ID da anamnese
+                        Intent intent = new Intent(TelaPrincipal.this, TelaQuestions.class);
+                        intent.putExtra("EXTRA_ANAMNESE_ID", anamneseResponseID.idAnamnese());
+                        intent.putExtra("EXTRA_NOME", pacienteInfo.nome_pac());
+                        intent.putExtra("EXTRA_CPF", pacienteInfo.cpf_pac());
+                        intent.putExtra("EXTRA_DATA_NASCIMENTO", pacienteInfo.data_nasc_pac());
+                        startActivity(intent);
+                    } else {
+                        // Tratar os casos de erro
+                        Log.e("AnamneseCreation", "Erro ao criar anamnese: " + response.errorBody());
                     }
+                    resultDialog.dismiss();
+                }
 
-                    @Override
-                    public void onFailure(Call<AnamneseResponseID> call, Throwable t) {
-                        Log.e("AnamneseCreation", "Falha ao criar anamnese", t);
-                        resultDialog.dismiss();
-                    }
-                });
-            }
+                @Override
+                public void onFailure(Call<AnamneseResponseID> call, Throwable t) {
+                    Log.e("AnamneseCreation", "Falha ao criar anamnese", t);
+                    resultDialog.dismiss();
+                }
+            });
         });
 
-        buttonNao.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Feche o diálogo
-                resultDialog.dismiss();
-            }
-        });
+        buttonNao.setOnClickListener(v -> resultDialog.dismiss());
 
         // Cria e mostra o diálogo
         resultDialog.show();
@@ -319,18 +300,30 @@ public class TelaPrincipal extends AppCompatActivity {
         return cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
     }
 
-
-
-    public void listaAnamnese(){
-
+    public void listaAnamnese() {
         binding.btAnamanesesList.setOnClickListener(view -> {
             Intent intent = new Intent(TelaPrincipal.this, TelaListAnamnese.class);
             startActivity(intent);
         });
-
-
     }
 
+    private void controlButtonVisibility(int userType) {
+        Button specialButton = findViewById(R.id.specialButton);
+        Button btProntAnamnese = findViewById(R.id.btProntAnamnese);
 
+        if (userType == 3) { // Tipo 3 indica que o usuário é supervisor
+            specialButton.setVisibility(View.VISIBLE);
+            btProntAnamnese.setVisibility(View.VISIBLE);
 
+            // Adiciona o OnClickListener para abrir a tela de lista de anamneses de supervisor
+            specialButton.setOnClickListener(view -> {
+                Intent intent = new Intent(TelaPrincipal.this, AnamneseSupervisorActivity.class);
+                startActivity(intent);
+            });
+
+        } else {
+            specialButton.setVisibility(View.GONE);
+            btProntAnamnese.setVisibility(View.GONE);
+        }
+    }
 }

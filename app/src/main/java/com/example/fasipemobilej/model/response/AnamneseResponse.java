@@ -9,6 +9,8 @@ public record AnamneseResponse(
         LocalDateTime dataAnamnese,
         String statusAnamnese,
         String statusAnamneseFn,
+        String observacoes,
+        String nomeProf,
         PacienteResponse pacienteResponseDTO
 ) {
 }

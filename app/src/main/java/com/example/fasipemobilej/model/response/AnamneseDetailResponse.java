@@ -11,4 +11,6 @@ public record AnamneseDetailResponse(
         LocalDateTime dataAnamnese,
         List<AnamnePerguntaResposta> perguntasRespostas,
         ProfissionalAnamneseResponse profissional
-) {}
+) {
+
+}
