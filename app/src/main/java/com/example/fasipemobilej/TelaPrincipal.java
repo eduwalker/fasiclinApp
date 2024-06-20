@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.fasipemobilej.databinding.ActivityTelaPrincipalBinding;
 import com.example.fasipemobilej.model.request.AnamneseRequest;
@@ -28,6 +29,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -58,6 +61,22 @@ public class TelaPrincipal extends AppCompatActivity {
         btlogout();
 
         binding.searchAnamnese.setOnClickListener(v -> binding.searchAnamnese.clearFocus());
+
+        // Configure o ViewPager2
+        List<String> titles = new ArrayList<>();
+        titles.add("Total");
+        titles.add("Aprovadas");
+        titles.add("Reprovadas");
+        titles.add("Canceladas");
+
+        List<String> contents = new ArrayList<>();
+        contents.add("Detalhes de Total");
+        contents.add("Detalhes de Aprovadas");
+        contents.add("Detalhes de Reprovadas");
+        contents.add("Detalhes de Canceladas");
+
+        CarouselAdapter carouselAdapter = new CarouselAdapter(titles, contents);
+        binding.viewPager.setAdapter(carouselAdapter);
     }
 
     private void btlogout() {
