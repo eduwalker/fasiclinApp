@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fasipemobilej.model.request.AnamneseObsRequest;
+import com.example.fasipemobilej.model.request.AnamneseSaveProntuarioRequest;
 import com.example.fasipemobilej.model.request.StatusAnamneseRequest;
 import com.example.fasipemobilej.model.response.AnamnePerguntaResposta;
 import com.example.fasipemobilej.model.response.AnamneseDetailResponse;
@@ -247,18 +248,56 @@ public class AnamneseDetailSupervisorActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    Toast.makeText(AnamneseDetailSupervisorActivity.this, "Status atualizados com sucesso, Anamnese APROVAD!", Toast.LENGTH_SHORT).show();
+                    Log.d("AnamneseStatus", "Status atualizado com sucesso, Anamnese APROVADA!");
+                    saveAnamneseToProntuario(anamneseId, token); // Chamar método para salvar no prontuário
                     finish(); // Voltar à tela anterior
                 } else {
+                    Log.e("AnamneseStatus", "Erro ao aprovar Anamnese: " + response.errorBody());
                     Toast.makeText(AnamneseDetailSupervisorActivity.this, "Erro ao aprovar Anamnese...", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("AnamneseStatus", "Falha na comunicação: " + t.getMessage());
                 Toast.makeText(AnamneseDetailSupervisorActivity.this, "Falha na comunicação: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
+
+    private void saveAnamneseToProntuario(long anamneseId, String token) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
+                .client(buildHttpClient())
+                .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create(buildGson()))
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+
+        AnamneseSaveProntuarioRequest request = new AnamneseSaveProntuarioRequest(anamneseId);
+        Call<Void> call = apiService.saveAnamneseToProntuario("Bearer " + token, request);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Log.d("SaveProntuario", "Anamnese salva no prontuário com sucesso!");
+                    Toast.makeText(AnamneseDetailSupervisorActivity.this, "Anamnese salva no prontuário com sucesso!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e("SaveProntuario", "Erro ao salvar anamnese no prontuário: " + response.errorBody());
+                    Toast.makeText(AnamneseDetailSupervisorActivity.this, "Erro ao salvar anamnese no prontuário.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("SaveProntuario", "Falha na comunicação: " + t.getMessage());
+                Toast.makeText(AnamneseDetailSupervisorActivity.this, "Falha na comunicação: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
 
 }

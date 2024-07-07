@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fasipemobilej.model.request.AnamneseAnswerRequest;
+import com.example.fasipemobilej.model.request.AnamneseAuthPac;
 import com.example.fasipemobilej.model.response.AnamneseAnswerResponse;
 import com.example.fasipemobilej.model.response.AnamneseStatusResponse;
 import com.example.fasipemobilej.model.request.RespostaDTO;
@@ -40,8 +41,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class TelaQuestions extends AppCompatActivity {
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +59,6 @@ public class TelaQuestions extends AppCompatActivity {
         EditText editCpf = findViewById(R.id.editCpf);
         editCpf.setText(formatarCPF(cpf));
 
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dataNascimento = LocalDate.parse(dataNascimentoStr, formatter);
         LocalDate agora = LocalDate.now();
@@ -76,11 +74,9 @@ public class TelaQuestions extends AppCompatActivity {
         setupCancelButton();
     }
 
-
     public static String formatarCPF(String cpf) {
         return cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
     }
-
 
     private void setupSpinnerSexo() {
         Spinner spinnerSexo = findViewById(R.id.spinnerSexo);
@@ -88,8 +84,6 @@ public class TelaQuestions extends AppCompatActivity {
                 R.array.sexo_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSexo.setAdapter(adapter);
-
-
     }
 
     private void setupSpinnerEstadoCivil() {
@@ -98,8 +92,6 @@ public class TelaQuestions extends AppCompatActivity {
                 R.array.estado_civil_array, android.R.layout.simple_spinner_item);
         adapterEstadoCivil.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEstadoCivil.setAdapter(adapterEstadoCivil);
-
-
     }
 
     private void setupBackButton() {
@@ -111,8 +103,6 @@ public class TelaQuestions extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void setupCancelButton() {
         Button cancelButton = findViewById(R.id.buttonCancelar);
@@ -132,8 +122,79 @@ public class TelaQuestions extends AppCompatActivity {
                 if (!verificarCampos()) {
                     Toast.makeText(TelaQuestions.this, "Por favor, preencha todos os campos.", Toast.LENGTH_SHORT).show();
                 } else {
-                    confirmarAnamnese();
+                    showAuthorizationDialog();
                 }
+            }
+        });
+    }
+
+    private void showAuthorizationDialog() {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_auth_anamnese, null);
+
+        Button buttonSim = dialogView.findViewById(R.id.buttonSimCancel);
+        Button buttonNao = dialogView.findViewById(R.id.buttonNaoCancel);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(TelaQuestions.this);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        buttonSim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                atualizarAuthPac(1);
+                dialog.dismiss();
+            }
+        });
+
+        buttonNao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                atualizarAuthPac(0);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void atualizarAuthPac(int authPac) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+        String token = sharedPreferences.getString("TOKEN", "");
+        long anamneseId = sharedPreferences.getLong("ANAMNESE_ID", -1);
+
+        if (anamneseId == -1) {
+            Toast.makeText(TelaQuestions.this, "Erro: ID da anamnese não encontrado.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        AnamneseAuthPac request = new AnamneseAuthPac(anamneseId, authPac);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
+                .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService service = retrofit.create(ApiService.class);
+        Call<Void> call = service.atualizarAuthPac("Bearer " + token, request);
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(TelaQuestions.this, "Autorização atualizada com sucesso!", Toast.LENGTH_SHORT).show();
+                    confirmarAnamnese();
+                } else {
+                    Toast.makeText(TelaQuestions.this, "Falha ao atualizar autorização!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(TelaQuestions.this, "Erro na comunicação: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -176,7 +237,6 @@ public class TelaQuestions extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     finish();
                     startActivity(intent);
-
                 } else {
                     try {
                         Log.e("API Error", "Erro ao enviar anamnese: " + response.code() + " - " + response.errorBody().string());
@@ -191,16 +251,9 @@ public class TelaQuestions extends AppCompatActivity {
             public void onFailure(Call<AnamneseAnswerResponse> call, Throwable t) {
                 Log.e("Retrofit", "Erro na comunicação: " + t.getMessage());
                 Toast.makeText(TelaQuestions.this, "Erro no envio da anamnese", Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(TelaQuestions.this, TelaPrincipal.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                finish();
-//                startActivity(intent);
             }
         });
     }
-
-
-
 
     private List<RespostaDTO> coletarDadosDeRespostas() {
         List<RespostaDTO> respostas = new ArrayList<>();
@@ -219,7 +272,6 @@ public class TelaQuestions extends AppCompatActivity {
         String sexo = ((Spinner) findViewById(R.id.spinnerSexo)).getSelectedItem().toString();
         String estadoCivil = ((Spinner) findViewById(R.id.spinnerEstadoCivil)).getSelectedItem().toString();
 
-
         respostas.add(new RespostaDTO(1, nome));
         respostas.add(new RespostaDTO(2, idade));
         respostas.add(new RespostaDTO(3, rg));
@@ -234,45 +286,41 @@ public class TelaQuestions extends AppCompatActivity {
         respostas.add(new RespostaDTO(12, doencaCronica));
         respostas.add(new RespostaDTO(99, sexo));
 
-
         return respostas;
     }
 
+    private boolean verificarCampos() {
+        String nome = ((EditText) findViewById(R.id.editNome)).getText().toString();
+        String cpf = ((EditText) findViewById(R.id.editCpf)).getText().toString();
+        String idade = ((EditText) findViewById(R.id.editIdade)).getText().toString();
+        String rg = ((EditText) findViewById(R.id.editRG)).getText().toString();
+        String cartaoSus = ((EditText) findViewById(R.id.editCartaoSus)).getText().toString();
+        String leito = ((EditText) findViewById(R.id.editLeito)).getText().toString();
+        String profissao = ((EditText) findViewById(R.id.editProfissao)).getText().toString();
+        String escolaridade = ((EditText) findViewById(R.id.editEscolaridade)).getText().toString();
+        String diagMedico = ((EditText) findViewById(R.id.editDiagMedico)).getText().toString();
+        String motivInter = ((EditText) findViewById(R.id.editMotivInter)).getText().toString();
+        String doencaCronica = ((EditText) findViewById(R.id.editDoencaCronica)).getText().toString();
 
-            private boolean verificarCampos() {
+        // Verificar se os campos estão vazios
+        if (nome.isEmpty() || cpf.isEmpty() || idade.isEmpty() || rg.isEmpty() || cartaoSus.isEmpty() || leito.isEmpty() ||
+                profissao.isEmpty() || escolaridade.isEmpty() || diagMedico.isEmpty() || motivInter.isEmpty() || doencaCronica.isEmpty()) {
+            return false; // Algum campo está vazio
+        }
 
-                String nome = ((EditText) findViewById(R.id.editNome)).getText().toString();
-                String cpf = ((EditText) findViewById(R.id.editCpf)).getText().toString();
-                String idade = ((EditText) findViewById(R.id.editIdade)).getText().toString();
-                String rg = ((EditText) findViewById(R.id.editRG)).getText().toString();
-                String cartaoSus = ((EditText) findViewById(R.id.editCartaoSus)).getText().toString();
-                String leito = ((EditText) findViewById(R.id.editLeito)).getText().toString();
-                String profissao = ((EditText) findViewById(R.id.editProfissao)).getText().toString();
-                String escolaridade = ((EditText) findViewById(R.id.editEscolaridade)).getText().toString();
-                String diagMedico = ((EditText) findViewById(R.id.editDiagMedico)).getText().toString();
-                String motivInter = ((EditText) findViewById(R.id.editMotivInter)).getText().toString();
-                String doencaCronica = ((EditText) findViewById(R.id.editDoencaCronica)).getText().toString();
+        // Verificações adicionais para os Spinners
+        Spinner spinnerSexo = findViewById(R.id.spinnerSexo);
+        if (spinnerSexo.getSelectedItemPosition() == 0) {
+            return false; // Nenhuma seleção feita no spinner de sexo
+        }
 
-                // Verificar se os campos estão vazios
-                if (nome.isEmpty() || cpf.isEmpty() || idade.isEmpty() || rg.isEmpty() || cartaoSus.isEmpty() || leito.isEmpty() ||
-                        profissao.isEmpty() || escolaridade.isEmpty() || diagMedico.isEmpty() || motivInter.isEmpty() || doencaCronica.isEmpty()) {
-                    return false; // Algum campo está vazio
-                }
+        Spinner spinnerEstadoCivil = findViewById(R.id.spinnerEstadoCivil);
+        if (spinnerEstadoCivil.getSelectedItemPosition() == 0) {
+            return false;
+        }
 
-                // Verificações adicionais para os Spinners
-                Spinner spinnerSexo = findViewById(R.id.spinnerSexo);
-                if (spinnerSexo.getSelectedItemPosition() == 0) {
-                    return false; // Nenhuma seleção feita no spinner de sexo
-                }
-
-                Spinner spinnerEstadoCivil = findViewById(R.id.spinnerEstadoCivil);
-                if (spinnerEstadoCivil.getSelectedItemPosition() == 0) {
-                    return false;
-                }
-
-                return true;
-            }
-
+        return true;
+    }
 
     private void invalidateAnamneseAndFinish() {
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -323,12 +371,11 @@ public class TelaQuestions extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(TelaQuestions.this);
         builder.setView(dialogView);
 
-        AlertDialog dialog = builder.create(); // Cria o AlertDialog a partir do builder
+        AlertDialog dialog = builder.create();
 
         buttonSim.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Função para invalidar a anamnese e finalizar a atividade
                 invalidateAnamneseAndFinish();
                 dialog.dismiss();
                 finish();
@@ -338,15 +385,12 @@ public class TelaQuestions extends AppCompatActivity {
         buttonNao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss(); // Simplesmente fecha o diálogo
+                dialog.dismiss();
             }
         });
 
-        dialog.show(); // Exibe o diálogo na tela
+        dialog.show();
     }
-
-
-
 
     private void atualizarStatusAnamnese(Long idAnamnese, String status, String statusfn){
         SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
@@ -361,23 +405,19 @@ public class TelaQuestions extends AppCompatActivity {
 
         StatusAnamneseRequest request = new StatusAnamneseRequest(idAnamnese, status, statusfn);
 
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ApiEnvironment.DEVELOPMENT.getBaseUrl())
                 .client(UnsafeOkHttpClient.getUnsafeOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-
         ApiService service = retrofit.create(ApiService.class);
-
 
         service.atualizarAnamnese("Bearer " + token, request).enqueue(new Callback<AnamneseStatusResponse>() {
             @Override
             public void onResponse(Call<AnamneseStatusResponse> call, Response<AnamneseStatusResponse> response) {
                 if (response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Status atualizado com sucesso!", Toast.LENGTH_SHORT).show();
-
                 } else {
                     Toast.makeText(getApplicationContext(), "Falha ao atualizar status", Toast.LENGTH_SHORT).show();
                 }
@@ -389,7 +429,5 @@ public class TelaQuestions extends AppCompatActivity {
             }
         });
     }
-
-
 
 }

@@ -2,7 +2,9 @@ package com.example.fasipemobilej.network;
 
 import com.example.fasipemobilej.AnamneseDetailActivity;
 import com.example.fasipemobilej.model.request.AnamneseAnswerRequest;
+import com.example.fasipemobilej.model.request.AnamneseAuthPac;
 import com.example.fasipemobilej.model.request.AnamneseObsRequest;
+import com.example.fasipemobilej.model.request.AnamneseSaveProntuarioRequest;
 import com.example.fasipemobilej.model.request.AnamneseViewRequest;
 import com.example.fasipemobilej.model.response.AnamneseAnswerResponse;
 import com.example.fasipemobilej.model.request.AnamneseRequest;
@@ -69,13 +71,17 @@ public interface ApiService {
     @PUT("fasiclin/anamnese/update-respostas")
     Call<ResponseBody> updateRespostas(@Header("Authorization") String token, @Body AnamneseAnswerRequest request);
 
+    @PUT("fasiclin/anamnese/update-auth-pac")
+    Call<Void> atualizarAuthPac(@Header("Authorization") String token, @Body AnamneseAuthPac request);
+
     @GET("/fasiclin/anamneses/page")
     Call<AnamneseListPage> listAnamnesesPaged(@Header("Authorization") String token, @Query("page") int page, @Query("size") int size);
 
     @GET("/fasiclin/anamneses/supervisor/page")
     Call<AnamneseListPage> listAnamnesesSupervisorPaged(@Header("Authorization") String token, @Query("page") int page, @Query("size") int size);
 
-
+    @POST("fasiclin/anamnese/save-to-prontuario")
+    Call<Void> saveAnamneseToProntuario(@Header("Authorization") String token, @Body AnamneseSaveProntuarioRequest request);
 
 
 }
