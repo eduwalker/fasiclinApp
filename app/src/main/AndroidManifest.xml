@@ -40,6 +40,9 @@
         <activity
             android:name=".TelaEditarAnamnese"
             android:exported="false"/>
+        <activity
+            android:name=".TelaListProntSup"
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"

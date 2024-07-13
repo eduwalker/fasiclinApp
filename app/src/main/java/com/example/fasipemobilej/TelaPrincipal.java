@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.fasipemobilej.databinding.ActivityTelaPrincipalBinding;
 import com.example.fasipemobilej.model.request.AnamneseRequest;
@@ -340,9 +339,16 @@ public class TelaPrincipal extends AppCompatActivity {
                 startActivity(intent);
             });
 
+            // Adiciona o OnClickListener para abrir a tela de anamneses aprovadas
+            btProntAnamnese.setOnClickListener(view -> {
+                Intent intent = new Intent(TelaPrincipal.this, TelaListProntSup.class);
+                startActivity(intent);
+            });
+
         } else {
             specialButton.setVisibility(View.GONE);
             btProntAnamnese.setVisibility(View.GONE);
         }
     }
+
 }

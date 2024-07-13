@@ -27,6 +27,7 @@ import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -147,6 +148,8 @@ public class AnamneseDetailActivity extends AppCompatActivity {
 
 
     private String buildHtml(AnamneseDetailResponse anamnese) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         StringBuilder htmlBuilder = new StringBuilder();
         htmlBuilder.append("<html><body>");
         htmlBuilder.append("<h1>Detalhes da Anamnese</h1>");
@@ -154,14 +157,14 @@ public class AnamneseDetailActivity extends AppCompatActivity {
         PacienteResponse paciente = anamnese.paciente();
         if (paciente != null) {
             htmlBuilder.append("<p>Nome: ").append(paciente.nome_pac()).append("</p>");
-            htmlBuilder.append("<p>CPF: ").append(paciente.cpf_pac()).append("</p>");
-            htmlBuilder.append("<p>Data de Nascimento: ").append(paciente.data_nasc_pac()).append("</p>"); // Se tiver o campo no seu modelo
+            htmlBuilder.append("<p>CPF: ").append(formatarCPF(paciente.cpf_pac())).append("</p>");
+            htmlBuilder.append("<p>Data de Nascimento: ").append(formatarData(paciente.data_nasc_pac())).append("</p>");
         } else {
             htmlBuilder.append("<p>Informações do paciente não disponíveis.</p>");
         }
 
-        htmlBuilder.append("<p>Data da Anamnese: ").append(anamnese.dataAnamnese()).append("</p>");
-        htmlBuilder.append("<p>Status da Anamnese: ").append(anamnese.statusAnamnese()).append("</p>");
+        htmlBuilder.append("<p>Data da Anamnese: ").append(anamnese.dataAnamnese().format(formatter)).append("</p>");
+//        htmlBuilder.append("<p>Status da Anamnese: ").append(anamnese.statusAnamnese()).append("</p>");
 
         htmlBuilder.append("<h2>Perguntas e Respostas</h2>");
         for (AnamnePerguntaResposta resposta : anamnese.perguntasRespostas()) {
@@ -173,7 +176,13 @@ public class AnamneseDetailActivity extends AppCompatActivity {
     }
 
 
-
+    private String formatarData(String data) {
+        LocalDate date = LocalDate.parse(data);
+        return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+    private String formatarCPF(String cpf) {
+        return cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4");
+    }
 
 
 }

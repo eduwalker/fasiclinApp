@@ -83,6 +83,10 @@ public interface ApiService {
     @POST("fasiclin/anamnese/save-to-prontuario")
     Call<Void> saveAnamneseToProntuario(@Header("Authorization") String token, @Body AnamneseSaveProntuarioRequest request);
 
+    @GET("fasiclin/anamneses/supervisor/aprovadas/page")
+    Call<AnamneseListPage> listApprovedAnamnesesBySupervisor(@Header("Authorization") String token, @Query("page") int page, @Query("size") int size);
+
+
 
 }
 
