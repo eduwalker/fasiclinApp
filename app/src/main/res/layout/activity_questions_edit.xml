@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/grey_white"
-        tools:context=".TelaQuestionsEdit">
+        tools:context=".TelaQuestions">
 
         <View
             android:id="@+id/containerTop"
@@ -18,9 +18,7 @@
             android:layout_height="70dp"
             android:background="@drawable/background_view_dash"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/containerTop"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -39,7 +37,7 @@
             android:id="@+id/txtTop"
             android:layout_width="0dp"
             android:layout_height="55dp"
-            android:text="@string/txt_registroanamnese"
+            android:text="@string/txt_registroanamneseEdit"
             android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -47,7 +45,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginTop="10dp"/>
 
         <TextView
@@ -60,11 +57,10 @@
             android:textColor="@color/black"
             android:gravity="start"
             android:paddingStart="15dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerTop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="110dp"/>
+            android:layout_marginTop="20dp"/>
 
         <TextView
             android:id="@+id/txtNome"
@@ -75,11 +71,10 @@
             android:textColor="@color/black"
             android:gravity="start"
             android:paddingStart="15dp"
-            app:layout_constraintTop_toTopOf="@id/txtTitulo1.1"
+            app:layout_constraintTop_toBottomOf="@id/txtTitulo1.1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editNome"
@@ -88,13 +83,26 @@
             android:hint="Nome"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtNome"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="180dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtCpf"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="CPF"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editNome"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editCpf"
@@ -103,43 +111,81 @@
             android:hint="CPF"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editNome"
+            app:layout_constraintTop_toBottomOf="@id/txtCpf"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtIdade"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Idade"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editCpf"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editIdade"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="IDADE"
+            android:hint="Idade"
             android:inputType="number"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editCpf"
+            app:layout_constraintTop_toBottomOf="@id/txtIdade"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtSexo"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Sexo"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editIdade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <Spinner
             android:id="@+id/spinnerSexo"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="SEXO"
             android:background="@drawable/background_list"
-            app:layout_constraintTop_toBottomOf="@id/editIdade"
+            app:layout_constraintTop_toBottomOf="@id/txtSexo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="14dp" />
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/txtRG"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="RG"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/spinnerSexo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editRG"
@@ -149,107 +195,183 @@
             android:inputType="number"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/spinnerSexo"
+            app:layout_constraintTop_toBottomOf="@id/txtRG"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtCartaoSus"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Cartão SUS"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editRG"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editCartaoSus"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="CARTÃO SUS"
+            android:hint="Cartão SUS"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editRG"
+            app:layout_constraintTop_toBottomOf="@id/txtCartaoSus"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtLeito"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Leito"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editCartaoSus"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editLeito"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="LEITO"
+            android:hint="Leito"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editCartaoSus"
+            app:layout_constraintTop_toBottomOf="@id/txtLeito"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtProfissao"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Profissão"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editLeito"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editProfissao"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="PROFISSÃO"
+            android:hint="Profissão"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editLeito"
+            app:layout_constraintTop_toBottomOf="@id/txtProfissao"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtEscolaridade"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Escolaridade"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editProfissao"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editEscolaridade"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="ESCOLARIDADE"
+            android:hint="Escolaridade"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editProfissao"
+            app:layout_constraintTop_toBottomOf="@id/txtEscolaridade"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtEstadoCivil"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Estado Civil"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editEscolaridade"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <Spinner
             android:id="@+id/spinnerEstadoCivil"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="ESTADO CIVIL"
             android:background="@drawable/background_list"
-            app:layout_constraintTop_toBottomOf="@id/editEscolaridade"
+            app:layout_constraintTop_toBottomOf="@id/txtEstadoCivil"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="14dp" />
+            android:layout_marginTop="5dp" />
+
+        <TextView
+            android:id="@+id/txtDiagMedico"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Diagnóstico Médico"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/spinnerEstadoCivil"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editDiagMedico"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="DIAGNÓTICO MÉDICO"
+            android:hint="Diagnóstico Médico"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/spinnerEstadoCivil"
+            app:layout_constraintTop_toBottomOf="@id/txtDiagMedico"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
 
         <TextView
             android:id="@+id/txtTitulo1.2"
@@ -261,43 +383,68 @@
             android:textColor="@color/black"
             android:gravity="start"
             android:paddingStart="15dp"
-            app:layout_constraintTop_toTopOf="@id/editDiagMedico"
+            app:layout_constraintTop_toBottomOf="@id/editDiagMedico"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            android:layout_marginTop="70dp"/>
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/txtMotivInter"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Motivo da Internação"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/txtTitulo1.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editMotivInter"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="MOTIVO DA INTERNAÇÃO"
+            android:hint="Motivo da Internação"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/txtTitulo1.2"
+            app:layout_constraintTop_toBottomOf="@id/txtMotivInter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/txtDoencaCronica"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:text="Doenças Crônicas"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:gravity="start"
+            android:paddingStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/editMotivInter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"/>
 
         <EditText
             android:id="@+id/editDoencaCronica"
             android:layout_width="0dp"
             android:layout_height="40dp"
-            android:hint="DOENÇAS CRÓNICAS"
+            android:hint="Doenças Crônicas"
             android:inputType="text"
             android:paddingStart="10dp"
             android:background="@drawable/background_question_button"
-            app:layout_constraintTop_toTopOf="@id/editMotivInter"
+            app:layout_constraintTop_toBottomOf="@id/txtDoencaCronica"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginTop="55dp"/>
+            android:layout_marginTop="5dp"/>
 
         <Button
             android:id="@+id/buttonConfirmar"
@@ -308,25 +455,24 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/editDoencaCronica"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/buttonVerObservacoes"
+            app:layout_constraintEnd_toStartOf="@id/buttonCancelar"
             app:layout_constraintHorizontal_chainStyle="packed"
             android:layout_marginStart="15dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp" />
 
         <Button
-            android:id="@+id/buttonVerObservacoes"
+            android:id="@+id/buttonCancelar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Ver Observações"
+            android:text="Cancelar"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:backgroundTint="@color/blue_mate"
+            android:backgroundTint="@color/red_mate"
             app:layout_constraintTop_toTopOf="@id/buttonConfirmar"
             app:layout_constraintStart_toEndOf="@id/buttonConfirmar"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

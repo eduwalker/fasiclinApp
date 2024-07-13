@@ -148,7 +148,7 @@ public class TelaListProntSup extends AppCompatActivity {
         AlertDialog dialog = builder.create();
 
         popupView.findViewById(R.id.btVisualizarSup).setOnClickListener(v -> {
-            Intent intent = new Intent(TelaListProntSup.this, AnamneseDetailSupervisorActivity.class);
+            Intent intent = new Intent(TelaListProntSup.this, AnamneseDetailPront.class);
             intent.putExtra("EXTRA_ANAMNESE_ID", anamnese.idAnamnese());
             startActivity(intent);
             dialog.dismiss();

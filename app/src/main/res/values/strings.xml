@@ -11,6 +11,7 @@
     <string name="txt_prodAnamnese">ANAMNESES\nPRONTUARIO</string>
     <string name="txt_listAnamnese">LISTA</string>
     <string name="txt_registroanamnese">REGISTRO DE ANAMNESE</string>
+    <string name="txt_registroanamneseEdit">EDIÇÃO DE ANAMNESE</string>
     <string name="txt_nome">NOME</string>
     <string name="txt_cpf">CPF</string>
     <string name="remember_password">Lembrar senha</string>
@@ -26,7 +27,7 @@
         <item>ESTADO CIVIL</item>
         <item>Solteiro(a)</item>
         <item>Casado(a)</item>
-        <item>Outro</item>
+        <item>Viúvo(a)</item>
     </string-array>
 
 </resources>

@@ -56,7 +56,7 @@ public class TelaEditarAnamnese extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question);
+        setContentView(R.layout.activity_questions_edit);
         getSupportActionBar().hide();
 
         Intent intent = getIntent();
@@ -130,50 +130,82 @@ public class TelaEditarAnamnese extends AppCompatActivity {
                 .create();
     }
 
+
     private void preencherCampos(AnamneseDetailResponse anamnese) {
+        Log.d("PreencherCampos", "Iniciando preenchimento dos campos");
         for (AnamnePerguntaResposta resposta : anamnese.perguntasRespostas()) {
+            String respostaTexto = resposta.resposta() != null ? resposta.resposta() : "";
+            Log.d("PreencherCampos", "Pergunta: " + resposta.pergunta() + ", Resposta: " + respostaTexto);
+
             switch (resposta.pergunta()) {
+                case "Nome":
+                    ((EditText) findViewById(R.id.editNome)).setText(respostaTexto);
+                    break;
+                case "Idade":
+                    ((EditText) findViewById(R.id.editIdade)).setText(respostaTexto);
+                    break;
                 case "RG":
-                    ((EditText) findViewById(R.id.editRG)).setText(resposta.resposta());
+                    ((EditText) findViewById(R.id.editRG)).setText(respostaTexto);
+                    break;
+                case "CPF":
+                    ((EditText) findViewById(R.id.editCpf)).setText(formatarCPF(respostaTexto));
                     break;
                 case "Cartão SUS":
-                    ((EditText) findViewById(R.id.editCartaoSus)).setText(resposta.resposta());
+                    ((EditText) findViewById(R.id.editCartaoSus)).setText(respostaTexto);
                     break;
                 case "Leito":
-                    ((EditText) findViewById(R.id.editLeito)).setText(resposta.resposta());
+                    ((EditText) findViewById(R.id.editLeito)).setText(respostaTexto);
                     break;
                 case "Profissão":
-                    ((EditText) findViewById(R.id.editProfissao)).setText(resposta.resposta());
+                    ((EditText) findViewById(R.id.editProfissao)).setText(respostaTexto);
                     break;
                 case "Escolaridade":
-                    ((EditText) findViewById(R.id.editEscolaridade)).setText(resposta.resposta());
+                    ((EditText) findViewById(R.id.editEscolaridade)).setText(respostaTexto);
                     break;
                 case "Diagnóstico Médico":
-                    ((EditText) findViewById(R.id.editDiagMedico)).setText(resposta.resposta());
+                    ((EditText) findViewById(R.id.editDiagMedico)).setText(respostaTexto);
                     break;
-                case "Motivo da Internação":
-                    ((EditText) findViewById(R.id.editMotivInter)).setText(resposta.resposta());
+                case "Motivo da internação":
+                    Log.d("PreencherCampos", "Configurando Motivo da Internação: " + respostaTexto);
+                    ((EditText) findViewById(R.id.editMotivInter)).setText(respostaTexto);
                     break;
                 case "Doenças Crônicas":
-                    ((EditText) findViewById(R.id.editDoencaCronica)).setText(resposta.resposta());
+                    Log.d("PreencherCampos", "Configurando Doenças Crônicas: " + respostaTexto);
+                    ((EditText) findViewById(R.id.editDoencaCronica)).setText(respostaTexto);
                     break;
                 case "Sexo":
                     Spinner spinnerSexo = findViewById(R.id.spinnerSexo);
                     ArrayAdapter<CharSequence> adapterSexo = (ArrayAdapter<CharSequence>) spinnerSexo.getAdapter();
-                    int positionSexo = adapterSexo.getPosition(resposta.resposta());
-                    spinnerSexo.setSelection(positionSexo);
+                    int positionSexo = adapterSexo.getPosition(respostaTexto);
+                    if (positionSexo >= 0) {
+                        spinnerSexo.setSelection(positionSexo);
+                    } else {
+                        Log.w("PreencherCampos", "Resposta de Sexo não encontrada no Spinner: " + respostaTexto);
+                    }
                     break;
-                case "Estado Civil":
+                case "Estado Cívil":
+                    Log.d("PreencherCampos", "Configurando Estado Civil: " + respostaTexto);
                     Spinner spinnerEstadoCivil = findViewById(R.id.spinnerEstadoCivil);
                     ArrayAdapter<CharSequence> adapterEstadoCivil = (ArrayAdapter<CharSequence>) spinnerEstadoCivil.getAdapter();
-                    int positionEstadoCivil = adapterEstadoCivil.getPosition(resposta.resposta());
-                    spinnerEstadoCivil.setSelection(positionEstadoCivil);
+                    int positionEstadoCivil = adapterEstadoCivil.getPosition(respostaTexto);
+                    if (positionEstadoCivil >= 0) {
+                        spinnerEstadoCivil.setSelection(positionEstadoCivil);
+                    } else {
+                        Log.w("PreencherCampos", "Resposta de Estado Civil não encontrada no Spinner: " + respostaTexto);
+                    }
                     break;
                 default:
+                    Log.w("PreencherCampos", "Pergunta não tratada: " + resposta.pergunta());
                     break;
             }
         }
+        Log.d("PreencherCampos", "Finalizado preenchimento dos campos");
     }
+
+
+
+
+
 
     private void setupSpinnerSexo() {
         Spinner spinnerSexo = findViewById(R.id.spinnerSexo);
@@ -190,6 +222,7 @@ public class TelaEditarAnamnese extends AppCompatActivity {
         adapterEstadoCivil.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEstadoCivil.setAdapter(adapterEstadoCivil);
     }
+
 
     private void setupBackButton() {
         ImageButton backButton = findViewById(R.id.buttonReturn);
