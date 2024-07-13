@@ -26,7 +26,6 @@ import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -49,7 +48,9 @@ public class AnamneseDetailPront extends AppCompatActivity {
 
         webView = findViewById(R.id.webviewAnamnese);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);  // Habilitar armazenamento DOM
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setAllowContentAccess(true);
         webView.setWebViewClient(new WebViewClient());
         getSupportActionBar().hide();
 
@@ -99,7 +100,7 @@ public class AnamneseDetailPront extends AppCompatActivity {
                     AnamneseDetailResponse anamnese = response.body();
                     String htmlContent = buildHtml(anamnese);
                     Log.d("AnamneseDetailPront", "HTML content: " + htmlContent);
-                    webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
+                    webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null);
                 } else {
                     Log.e("API Error", "Response not successful or null: " + response.errorBody());
                     Toast.makeText(AnamneseDetailPront.this, "Erro ao carregar anamnese", Toast.LENGTH_SHORT).show();
@@ -154,14 +155,75 @@ public class AnamneseDetailPront extends AppCompatActivity {
                 .append("h2 { color: #4CAF50; }")
                 .append("p { font-size: 16px; line-height: 1.6; }")
                 .append("strong { color: #388E3C; }")
+                .append(".container { background-color: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 10px; }")
                 .append("</style>")
-                .append("</head><body>");
-        htmlBuilder.append("<h1>Perguntas e Respostas</h1>");
+                .append("</head><body>")
+                .append("<div class='container'>")
+                .append("<h1>Anamnese Fasiclin</h1>");
+
         for (AnamnePerguntaResposta resposta : anamnese.perguntasRespostas()) {
-            htmlBuilder.append("<p><strong>").append(resposta.pergunta()).append(":</strong> ").append(resposta.resposta()).append("</p>");
+            String pergunta = resposta.pergunta();
+            String respostaTexto = resposta.resposta() != null ? resposta.resposta() : "";
+
+            switch (pergunta) {
+                case "Nome":
+                    htmlBuilder.append("<p><strong>Nome:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Idade":
+                    htmlBuilder.append("<p><strong>Idade:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "RG":
+                    htmlBuilder.append("<p><strong>RG:</strong> ").append(formatarRG(respostaTexto)).append("</p>");
+                    break;
+                case "CPF":
+                    htmlBuilder.append("<p><strong>CPF:</strong> ").append(formatarCPF(respostaTexto)).append("</p>");
+                case "Sexo":
+                    htmlBuilder.append("<p><strong>Sexo:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Cartão SUS":
+                    htmlBuilder.append("<p><strong>Cartão SUS:</strong> ").append(formatarSUS(respostaTexto)).append("</p>");
+                    break;
+                case "Leito":
+                    htmlBuilder.append("<p><strong>Leito:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Profissão":
+                    htmlBuilder.append("<p><strong>Profissão:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Escolaridade":
+                    htmlBuilder.append("<p><strong>Escolaridade:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Diagnóstico Médico":
+                    htmlBuilder.append("<p><strong>Diagnóstico Médico:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Motivo da internação":
+                    htmlBuilder.append("<p><strong>Motivo da internação:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Doenças Crônicas":
+                    htmlBuilder.append("<p><strong>Doenças Crônicas:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                case "Estado Civil":
+                    htmlBuilder.append("<p><strong>Estado Civil:</strong> ").append(respostaTexto).append("</p>");
+                    break;
+                default:
+                    htmlBuilder.append("<p><strong>").append(pergunta).append(":</strong> ").append(respostaTexto).append("</p>");
+                    break;
+            }
         }
-        htmlBuilder.append("</body></html>");
+
+        htmlBuilder.append("</div></body></html>");
         Log.d("AnamneseDetailPront", "Generated HTML: " + htmlBuilder.toString());
         return htmlBuilder.toString();
+    }
+
+    private String formatarRG(String rg) {
+        return rg.length() == 8 ? rg.replaceAll("(\\d{2})(\\d{3})(\\d{3})", "$1.$2.$3") : rg;
+    }
+
+    private String formatarCPF(String cpf) {
+        return cpf.length() == 11 ? cpf.replaceAll("(\\d{3})(\\d{3})(\\d{3})(\\d{2})", "$1.$2.$3-$4") : cpf;
+    }
+
+    private String formatarSUS(String sus) {
+        return sus.length() == 15 ? sus.replaceAll("(\\d{3})(\\d{4})(\\d{4})(\\d{4})", "$1 $2 $3 $4") : sus;
     }
 }
